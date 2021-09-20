@@ -1,0 +1,35 @@
+---
+title: "Untitled"
+author: "Aymeric Stamm"
+date: "9/20/2021"
+output: html_document
+---
+
+```{r setup}
+library(reticulate)
+virtualenv_create("flippy")
+py_install("scipy", envname = "flippy")
+use_virtualenv("flippy")
+```
+
+```{python setup-py, include=FALSE}
+import pvalue
+from scipy.stats import norm
+```
+
+```{python}
+pvalue.phipson_smyth_pvalue(10, 50, 1000)
+```
+
+```{r}
+flipr:::phipson_smyth_pvalue(10, 50, 1000)
+```
+
+```{python}
+data = norm.rvs(0, 1, size = 100)
+pvalue.stats2pvalue(0, data, 1000)
+```
+
+```{r}
+flipr:::stats2pvalue(1, py$data, 1000)
+```
