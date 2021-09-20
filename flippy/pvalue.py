@@ -1,12 +1,12 @@
-import numpy
+import numpy as np
 from scipy import integrate
 from scipy.stats import binom
 import statistics
-import utils
+from .utils import match_arg
 
 def stats2pvalue(i, Tp, M, formula = "exact", alternative = "right_tail"):
     available_alternatives = ["left_tail", "right_tail", "two_tail"]
-    alternative = utils.match_arg(alternative, available_alternatives)
+    alternative = match_arg(alternative, available_alternatives)
     T0 = Tp[i]
     B = len(Tp) - 1
     if alternative == "right_tail":
@@ -19,7 +19,7 @@ def stats2pvalue(i, Tp, M, formula = "exact", alternative = "right_tail"):
 
 def get_p(b, B, M, formula):
     available_formulae = ["exact", "upper_bound", "estimate"]
-    type = utils.match_arg(formula, available_formulae)
+    type = match_arg(formula, available_formulae)
     if type == "estimate":
         return b / B
     elif type == "upper_bound":
@@ -29,7 +29,7 @@ def get_p(b, B, M, formula):
 
 def phipson_smyth_pvalue(b, B, M):
     if M <= 10000:
-        pt = numpy.linspace(1, M + 1, M + 1) / (M + 1)
+        pt = np.linspace(1, M + 1, M + 1) / (M + 1)
         return statistics.mean(binom.cdf(k = b, n = B, p = pt))
   
     corr = integrate.quadrature(binom.cdf, 0, 0.5 / (M + 1), args = {k: b, n: B})
@@ -37,8 +37,8 @@ def phipson_smyth_pvalue(b, B, M):
 
 def combine_pvalues(p, combine_with = "tippett"):
     available_combine_withs = ["fisher", "tippett"]
-    combine_with = utils.match_arg(combine_with, available_combine_withs)
+    combine_with = match_arg(combine_with, available_combine_withs)
     if combine_with == "tippett":
         return 1 - min(p)
     else:
-        return -2 * sum(numpy.log(p))
+        return -2 * sum(np.log(p))
