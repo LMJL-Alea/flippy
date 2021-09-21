@@ -6,7 +6,7 @@ output: html_document
 ---
 
 ```{r setup}
-library(reticulate)
+# library(reticulate)
 # virtualenv_create("flippy")
 # py_install("scipy", envname = "flippy")
 # use_virtualenv("flippy")
