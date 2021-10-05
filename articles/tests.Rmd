@@ -7,10 +7,10 @@ output: html_document
 
 ```{r setup}
 library(reticulate)
-virtualenv_create("flippy")
-py_install("scipy", envname = "flippy")
-py_install("../", envname = "flippy")
-use_virtualenv("flippy")
+reticulate::conda_create("r-reticulate")
+reticulate::conda_install("scipy", envname = "r-reticulate")
+reticulate::conda_install("../", envname = "r-reticulate", pip = TRUE)
+reticulate::use_condaenv("r-reticulate")
 ```
 
 ```{python setup-py, include=FALSE}
