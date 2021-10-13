@@ -5,15 +5,21 @@ date: "9/20/2021"
 output: html_document
 ---
 
-```{r setup}
+```{r setup, include=FALSE}
 library(reticulate)
-reticulate::conda_create("r-reticulate")
-reticulate::conda_install("scipy", envname = "r-reticulate")
-reticulate::conda_install("../", envname = "r-reticulate", pip = TRUE)
-reticulate::use_condaenv("r-reticulate")
+conda_create("r-reticulate")
+conda_install("scipy", envname = "r-reticulate")
+conda_install("../", envname = "r-reticulate", pip = TRUE)
+old_py <- Sys.getenv("RETICULATE_PYTHON")
+Sys.unsetenv("RETICULATE_PYTHON")
+use_condaenv("r-reticulate")
 ```
 
-```{python setup-py, include=FALSE}
+```{r py-config}
+py_config()
+```
+
+```{python}
 import flippy
 from scipy.stats import norm
 ```
@@ -33,4 +39,9 @@ flippy.stats2pvalue(0, data, 1000)
 
 ```{r}
 flipr:::stats2pvalue(1, py$data, 1000)
+```
+
+
+```{r clean}
+Sys.setenv(RETICULATE_PYTHON = old_py)
 ```
