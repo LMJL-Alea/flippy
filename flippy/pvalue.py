@@ -43,54 +43,54 @@ def combine_pvalues(p, combine_with = "tippett"):
     else:
         return -2 * sum(np.log(p))
 
-def run_permutation_scheme(formula, alternative, stats, B, perm_data, stat_data, M, combine_with, ...):
-    formula = match_arg(formula, c("exact", "upper_bound", "estimate"))
-    alternative = match_arg(alternative, c("left_tail", "right_tail", "two_tail"))
-    nstats = len(stats)
-    npc = nstats > 1
-    if npc == True:
-        altern = "right_tail"
-    else:
-        altern = alternative
-    if len(alternative) == 1:
-        alternative = np.repeat(alternative, nstats)
-  
-    if npc == False:
-        Tp <- sapply(
-          X = 0:B,
-          FUN = get_permuted_statistic,
-          perm_data = perm_data,
-          stat_data = stat_data,
-          stat_fun = stats[[1]],
-          ...
-        )
-    else:
-        Tp <- stats %>%
-          purrr::map(function(.x, ...) {
-            sapply(
-              X = 0:B,
-              FUN = get_permuted_statistic,
-              perm_data = perm_data,
-              stat_data = stat_data,
-              stat_fun = .x,
-              ...
-            )
-          }, ...) %>%
-          purrr::map2(alternative, ~ sapply(
-            X = 1:(B+1),
-            FUN = stats2pvalue,
-            Tp = .x,
-            M = M,
-            formula = "upper_bound",
-            alternative = .y
-          )) %>%
-          purrr::transpose() %>%
-          purrr::simplify_all() %>%
-          purrr::map_dbl(combine_pvalues, combine_with = combine_with)
-  
-    return {
-        observed: Tp[1],
-        pvalue: stats2pvalue(1, Tp, M, formula = formula, alternative = altern),
-        null_distribution: Tp[-1],
-        permutations: perm_data
-    }
+# def run_permutation_scheme(formula, alternative, stats, B, perm_data, stat_data, M, combine_with, ...):
+#     formula = match_arg(formula, c("exact", "upper_bound", "estimate"))
+#     alternative = match_arg(alternative, c("left_tail", "right_tail", "two_tail"))
+#     nstats = len(stats)
+#     npc = nstats > 1
+#     if npc == True:
+#         altern = "right_tail"
+#     else:
+#         altern = alternative
+#     if len(alternative) == 1:
+#         alternative = np.repeat(alternative, nstats)
+#   
+#     if npc == False:
+#         Tp <- sapply(
+#           X = 0:B,
+#           FUN = get_permuted_statistic,
+#           perm_data = perm_data,
+#           stat_data = stat_data,
+#           stat_fun = stats[[1]],
+#           ...
+#         )
+#     else:
+#         Tp <- stats %>%
+#           purrr::map(function(.x, ...) {
+#             sapply(
+#               X = 0:B,
+#               FUN = get_permuted_statistic,
+#               perm_data = perm_data,
+#               stat_data = stat_data,
+#               stat_fun = .x,
+#               ...
+#             )
+#           }, ...) %>%
+#           purrr::map2(alternative, ~ sapply(
+#             X = 1:(B+1),
+#             FUN = stats2pvalue,
+#             Tp = .x,
+#             M = M,
+#             formula = "upper_bound",
+#             alternative = .y
+#           )) %>%
+#           purrr::transpose() %>%
+#           purrr::simplify_all() %>%
+#           purrr::map_dbl(combine_pvalues, combine_with = combine_with)
+#   
+#     return {
+#         observed: Tp[1],
+#         pvalue: stats2pvalue(1, Tp, M, formula = formula, alternative = altern),
+#         null_distribution: Tp[-1],
+#         permutations: perm_data
+#     }
