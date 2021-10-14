@@ -7,7 +7,7 @@ output: html_document
 
 ```{r setup, include=FALSE}
 library(reticulate)
-conda_create("r-reticulate")
+conda_create("r-reticulate", python_version = "3.9")
 conda_install("scipy", envname = "r-reticulate")
 conda_install("../", envname = "r-reticulate", pip = TRUE)
 old_py <- Sys.getenv("RETICULATE_PYTHON")
