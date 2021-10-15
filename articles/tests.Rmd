@@ -20,6 +20,7 @@ py_config()
 ```
 
 ```{python}
+import numpy as np
 import flippy
 from scipy.stats import norm
 ```
@@ -41,6 +42,39 @@ flippy.stats2pvalue(0, data, 1000)
 flipr:::stats2pvalue(1, py$data, 1000)
 ```
 
+```{python}
+def stat_t(data, indices1, **kwargs):
+    n = len(data)
+    n1 = len(indices1)
+    n2 = n - n1
+    indices2 = list(set(range(n)) - set(indices1))
+    x1 = [data[i] for i in indices1]
+    x2 = [data[i] for i in indices2]
+    return np.mean(x1) - np.mean(x2)
+```
+
+```{python}
+B = 100
+stat_data = list(data) * 2
+n = len(stat_data)
+n1 = len(list(data))
+perm_data = [list(np.random.choice(n, size = n1)) for _ in range(B)]
+perm_data.insert(0, list(range(n1)))
+perm_data = np.array(perm_data).transpose()
+```
+
+```{python}
+flippy.run_permutation_scheme(
+    formula = "exact", \
+    alternative = "two_tail", \
+    stats = [stat_t], \
+    B = 100, \
+    perm_data = perm_data, \
+    stat_data = stat_data, \
+    M = 100, \
+    combine_with = "tippett" \
+)
+```
 
 ```{r clean}
 Sys.setenv(RETICULATE_PYTHON = old_py)
