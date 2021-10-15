@@ -57,30 +57,43 @@ def run_permutation_scheme(formula, alternative, stats, B, perm_data, stat_data,
 
     if npc == False:
         Tp = [get_permuted_statistic(
-                  i, \
-                  perm_data = perm_data, \
-                  stat_data = stat_data, \
-                  stat_fun = stats[0], \
-                  **kwargs \
+                  i, 
+                  perm_data = perm_data, 
+                  stat_data = stat_data, 
+                  stat_fun = stats[0], 
+                  **kwargs
               ) for i in range(B+1)]
     else:
-        Tp = [[get_permuted_statistic(i, 
-                                     perm_data = perm_data, 
-                                     stat_data = stat_data, 
-                                     stat_fun = s, 
-                                     **kwargs) for i in range(B+1)] for s in stats]
-        Tp = [[stats2pvalue(i, Tp = tval, M = M, formula = "upper_bound", alternative = aval) for tval, aval in zip(Tp, alternative)] for i in range(B+1)+1]
-        Tp = [combine_pvalues(tvals, combine_with = combine_with) for tvals in Tp]
-        
-    print(stats[0])
-    print(Tp)
-# 
-#     return {
-#         "observed": Tp[0],
-#         "pvalue": stats2pvalue(0, Tp, M, formula = formula, alternative = altern),
-#         "null_distribution": Tp[1:],
-#         "permutations": perm_data
-#     }
+        Tp = [[get_permuted_statistic(
+                   i, 
+                   perm_data = perm_data, 
+                   stat_data = stat_data, 
+                   stat_fun = s, 
+                   **kwargs
+               ) for i in range(B+1)] for s in stats]
+        Tp = [[stats2pvalue(
+                   i, 
+                   Tp = tval, 
+                   M = M, 
+                   formula = "upper_bound", 
+                   alternative = aval
+               ) for tval, aval in zip(Tp, alternative)] for i in range(B+1)]
+        Tp = [combine_pvalues(
+                  tvals, 
+                  combine_with = combine_with
+              ) for tvals in Tp]
+
+    return {
+        "observed": Tp[0],
+        "pvalue": stats2pvalue(0, Tp, M, formula = formula, alternative = altern),
+        "null_distribution": Tp[1:],
+        "permutations": perm_data
+    }
 
 def get_permuted_statistic(i, perm_data, stat_data, stat_fun, **kwargs):
-    stat_fun(stat_data, perm_data[:, i], **kwargs)
+    return stat_fun(stat_data, perm_data[:, i], **kwargs)
+
+def flipn(n):
+    signs = [-1, 1]
+    l = [signs for _ in range(n)]
+    return np.array(np.meshgrid(*l)).reshape(n, 2**n)

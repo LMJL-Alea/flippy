@@ -51,10 +51,34 @@ def stat_t(data, indices1, **kwargs):
     x1 = [data[i] for i in indices1]
     x2 = [data[i] for i in indices2]
     return np.mean(x1) - np.mean(x2)
+def stat_f(data, indices1, **kwargs):
+    n = len(data)
+    n1 = len(indices1)
+    n2 = n - n1
+    indices2 = list(set(range(n)) - set(indices1))
+    x1 = [data[i] for i in indices1]
+    x2 = [data[i] for i in indices2]
+    return np.var(x1, ddof = 1) / np.var(x2, ddof = 1)
+```
+
+```{r}
+stat_t_r <- function(data, indices1, ...) {
+  indices2 <- seq_len(length(data))[-indices1]
+  x1 <- unlist(data[indices1])
+  x2 <- unlist(data[indices2])
+  mean(x1) - mean(x2)
+}
+stat_f_r <- function(data, indices1, ...) {
+  indices2 <- seq_len(length(data))[-indices1]
+  x1 <- unlist(data[indices1])
+  x2 <- unlist(data[indices2])
+  var(x1) / var(x2)
+}
 ```
 
 ```{python}
 B = 100
+M = 100
 stat_data = list(data) * 2
 n = len(stat_data)
 n1 = len(list(data))
@@ -65,15 +89,63 @@ perm_data = np.array(perm_data).transpose()
 
 ```{python}
 flippy.run_permutation_scheme(
-    formula = "exact", \
-    alternative = "two_tail", \
-    stats = [stat_t], \
-    B = 100, \
-    perm_data = perm_data, \
-    stat_data = stat_data, \
-    M = 100, \
-    combine_with = "tippett" \
+    formula = "exact", 
+    alternative = "two_tail", 
+    stats = [stat_t], 
+    B = B, 
+    perm_data = perm_data, 
+    stat_data = stat_data, 
+    M = M, 
+    combine_with = "tippett"
 )
+```
+
+```{r}
+flipr:::run_permutation_scheme(
+  type = "exact", 
+  alternative = "two_tail", 
+  stats = list(stat_t_r), 
+  B = py$B, 
+  perm_data = py$perm_data + 1, 
+  stat_data = py$stat_data, 
+  M = py$M, 
+  combine_with = "tippett"
+)
+```
+
+```{python}
+flippy.run_permutation_scheme(
+    formula = "exact", 
+    alternative = "two_tail", 
+    stats = [stat_t, stat_f], 
+    B = B, 
+    perm_data = perm_data, 
+    stat_data = stat_data, 
+    M = M, 
+    combine_with = "tippett"
+)
+```
+
+```{r}
+flipr:::run_permutation_scheme(
+  type = "exact", 
+  alternative = "two_tail", 
+  stats = list(stat_t_r, stat_f_r), 
+  B = py$B, 
+  perm_data = py$perm_data + 1, 
+  stat_data = py$stat_data, 
+  M = py$M, 
+  combine_with = "tippett"
+)
+```
+
+```{python}
+flpy = flippy.flipn(3)
+```
+
+```{r}
+flipr:::flipn(3)
+py$flpy
 ```
 
 ```{r clean}
