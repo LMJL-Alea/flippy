@@ -6,3 +6,7 @@ def match_arg(x, lst):
         sys.exit("x should be one of %s." % lst)
     else:
         return x
+
+def set_documentation(func):
+    func.__doc__ = DOCSTRING
+    return func
