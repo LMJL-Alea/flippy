@@ -7,6 +7,8 @@ def match_arg(x, lst):
     else:
         return x
 
-def set_documentation(func):
-    func.__doc__ = DOCSTRING
-    return func
+def set_doc(docum):
+    def set_documentation(func):
+        func.__doc__ = docum
+        return func
+    return set_documentation

@@ -96,4 +96,10 @@ def get_permuted_statistic(i, perm_data, stat_data, stat_fun, **kwargs):
 def flipn(n):
     signs = [-1, 1]
     l = [signs for _ in range(n)]
-    return np.array(np.meshgrid(*l)).reshape(n, 2**n)
+    res = np.array(np.meshgrid(*l, indexing = 'ij'))
+    return np.flip(res.reshape(n, 2**n), axis = 0)
+
+@set_documentation '''coucou'''
+def toto():
+    print("toto")
+

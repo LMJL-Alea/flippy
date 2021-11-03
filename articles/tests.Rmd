@@ -140,11 +140,11 @@ flipr:::run_permutation_scheme(
 ```
 
 ```{python}
-flpy = flippy.flipn(3)
+flpy = flippy.flipn(4)
 ```
 
 ```{r}
-flipr:::flipn(3)
+flipr:::flipn(4)
 py$flpy
 ```
 

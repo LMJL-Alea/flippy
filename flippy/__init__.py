@@ -6,7 +6,7 @@
 # from .plausibility_class import *
 # from .point_estimation import *
 from .pvalue import *
-# from .two_sample_stats import *
+from .two_sample_stats import stat_welch
 # from .two_sample_test import *
 # from .use_stats import *
 from .utils import *
