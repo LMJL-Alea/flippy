@@ -98,8 +98,3 @@ def flipn(n):
     l = [signs for _ in range(n)]
     res = np.array(np.meshgrid(*l, indexing = 'ij'))
     return np.flip(res.reshape(n, 2**n), axis = 0)
-
-@set_documentation '''coucou'''
-def toto():
-    print("toto")
-

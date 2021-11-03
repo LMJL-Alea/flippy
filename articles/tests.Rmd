@@ -9,6 +9,7 @@ output: html_document
 library(reticulate)
 conda_create("r-reticulate", python_version = "3.9")
 conda_install("scipy", envname = "r-reticulate")
+conda_install("triarray", envname = "r-reticulate", pip = TRUE)
 conda_install("../", envname = "r-reticulate", pip = TRUE)
 old_py <- Sys.getenv("RETICULATE_PYTHON")
 Sys.unsetenv("RETICULATE_PYTHON")
@@ -146,6 +147,60 @@ flpy = flippy.flipn(4)
 ```{r}
 flipr:::flipn(4)
 py$flpy
+```
+
+```{python}
+help(flippy.stat_welch)
+```
+
+```{python}
+x = list(np.random.rand(10))
+y = list(np.random.rand(10))
+```
+
+```{python}
+flippy.stat_welch(x + y, range(10))
+```
+
+```{r}
+flipr::stat_welch(c(py$x, py$y), 1:10)
+```
+
+```{python}
+flippy.stat_student(x + y, range(10))
+```
+
+```{r}
+flipr::stat_student(c(py$x, py$y), 1:10)
+```
+
+```{python}
+flippy.stat_fisher(x + y, range(10))
+```
+
+```{r}
+flipr::stat_fisher(c(py$x, py$y), 1:10)
+```
+
+```{r}
+xv <- purrr::array_tree(mvtnorm::rmvnorm(10, rep(0, 5)), margin = 1)
+yv <- purrr::array_tree(mvtnorm::rmvnorm(10, rep(0, 5)), margin = 1)
+```
+
+```{python}
+flippy.stat_hotelling(r.xv + r.yv, range(10))
+```
+
+```{r}
+flipr::stat_hotelling(c(xv, yv), 1:10)
+```
+
+```{python}
+flippy.stat_bs(r.xv + r.yv, range(10))
+```
+
+```{r}
+flipr::stat_bs(c(xv, yv), 1:10)
 ```
 
 ```{r clean}
