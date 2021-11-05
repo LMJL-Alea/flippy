@@ -269,6 +269,15 @@ flippy.stat_dom_ip(D, range(10))
 flipr::stat_dom_ip(D, 1:10)
 ```
 
+```{python}
+flippy.two_sample_test(x, y, M = 500, seed = 1234)["pvalue"]
+```
+
+```{r}
+flipr::two_sample_test(py$x, py$y, M = 500, seed = 1234)$pvalue
+```
+
+
 ```{r clean}
 Sys.setenv(RETICULATE_PYTHON = old_py)
 ```

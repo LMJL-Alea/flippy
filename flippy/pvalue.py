@@ -32,7 +32,7 @@ def phipson_smyth_pvalue(b, B, M):
         pt = np.linspace(1, M + 1, M + 1) / (M + 1)
         return statistics.mean(binom.cdf(k = b, n = B, p = pt))
   
-    corr = integrate.quadrature(binom.cdf, 0, 0.5 / (M + 1), args = {k: b, n: B})
+    corr = integrate.quadrature(lambda p: binom.cdf(k = b, n = B, p = p), 0, 0.5 / (M + 1))
     return (b + 1) / (B + 1) - corr[0]
 
 def combine_pvalues(p, combine_with = "tippett"):

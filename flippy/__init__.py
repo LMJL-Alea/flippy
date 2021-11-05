@@ -7,10 +7,10 @@
 # from .point_estimation import *
 from .pvalue import *
 from .two_sample_stats import *
-# from .two_sample_test import *
+from .two_sample_test import *
 # from .use_stats import *
 from .utils import *
 # from .viz import *
 
 # __all__ = ["confidence-interval", "grid-biregular", "new-inferred-param", "one-sample-stats", "one-sample-test", "plausibility-class", "point-estimation", "pvalue", "two-sample-stats", "two-sample-test", "use-stats", "utils", "viz"]
-__all__ = ["pvalue", "two_sample_stats", "utils"]
+__all__ = ["pvalue", "two_sample_stats", "two_sample_test", "utils"]
