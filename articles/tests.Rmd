@@ -9,6 +9,7 @@ output: html_document
 library(reticulate)
 conda_create("r-reticulate", python_version = "3.9")
 conda_install("scipy", envname = "r-reticulate")
+conda_install("numba", envname = "r-reticulate")
 conda_install("triarray", envname = "r-reticulate", pip = TRUE)
 conda_install("../", envname = "r-reticulate", pip = TRUE)
 old_py <- Sys.getenv("RETICULATE_PYTHON")
@@ -24,6 +25,7 @@ py_config()
 import numpy as np
 import flippy
 from scipy.stats import norm
+from triarray import TriMatrix
 ```
 
 ```{python}
@@ -183,8 +185,16 @@ flipr::stat_fisher(c(py$x, py$y), 1:10)
 ```
 
 ```{r}
-xv <- purrr::array_tree(mvtnorm::rmvnorm(10, rep(0, 5)), margin = 1)
-yv <- purrr::array_tree(mvtnorm::rmvnorm(10, rep(0, 5)), margin = 1)
+X <- mvtnorm::rmvnorm(10, rep(0, 5))
+Y <- mvtnorm::rmvnorm(10, rep(0, 5))
+D <- dist(rbind(X, Y), upper = TRUE)
+Dv <- as.numeric(D)
+xv <- purrr::array_tree(X, margin = 1)
+yv <- purrr::array_tree(Y, margin = 1)
+```
+
+```{python}
+D = TriMatrix(np.array(r.D), upper = True, diag_val = 0)
 ```
 
 ```{python}
@@ -201,6 +211,62 @@ flippy.stat_bs(r.xv + r.yv, range(10))
 
 ```{r}
 flipr::stat_bs(c(xv, yv), 1:10)
+```
+
+```{python}
+flippy.stat_t_ip(D, range(10))
+```
+
+```{r}
+flipr::stat_t_ip(D, 1:10)
+```
+
+```{python}
+flippy.stat_f_ip(D, range(10))
+```
+
+```{r}
+flipr::stat_f_ip(D, 1:10)
+```
+
+```{python}
+flippy.stat_bg_ip(D, range(10))
+```
+
+```{r}
+flipr::stat_bg_ip(D, 1:10)
+```
+
+```{python}
+flippy.stat_energy_ip(D, range(10))
+```
+
+```{r}
+flipr::stat_energy_ip(D, 1:10)
+```
+
+```{python}
+flippy.stat_cq_ip(D, range(10))
+```
+
+```{r}
+flipr::stat_cq_ip(D, 1:10)
+```
+
+```{python}
+flippy.stat_mod_ip(D, range(10))
+```
+
+```{r}
+flipr::stat_mod_ip(D, 1:10)
+```
+
+```{python}
+flippy.stat_dom_ip(D, range(10))
+```
+
+```{r}
+flipr::stat_dom_ip(D, 1:10)
 ```
 
 ```{r clean}
