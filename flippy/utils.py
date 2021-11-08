@@ -61,7 +61,7 @@ def convert_to_list(*args):
                         break
                 if not coherent_inputs:
                     sys.exit("When the first input is univariate data, all subsequent inputs should be univariate data as well.")
-            return [[x[i,:] for i in range(x.shape[0])] for x in l]
+            return [[x[i] for i in range(x.shape[0])] for x in l]
         if l[0].ndim == 2:
             # Case of multivariate data
             if n > 1:

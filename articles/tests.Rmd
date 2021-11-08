@@ -277,6 +277,22 @@ flippy.two_sample_test(x, y, M = 500, seed = 1234)["pvalue"]
 flipr::two_sample_test(py$x, py$y, M = 500, seed = 1234)$pvalue
 ```
 
+```{python}
+x = np.random.rand(10)
+y = np.random.rand(10)
+def null_spec(y, parameters):
+    return [obs - parameters[0] for obs in y]
+stat_functions = [flippy.stat_t]
+stat_assignments = {"mean": 0}
+pf = flippy.PlausibilityFunction(
+    x, y, 
+    null_spec = null_spec, 
+    stat_functions = stat_functions, 
+    stat_assignments = stat_assignments
+)
+pf.get_value([0])
+[print(param) for param in pf.parameters]
+```
 
 ```{r clean}
 Sys.setenv(RETICULATE_PYTHON = old_py)
