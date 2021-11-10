@@ -1,3 +1,6 @@
+import numpy as np
+import pandas as pd
+
 class InferredParameter(object):
     """
     """
@@ -104,3 +107,73 @@ class InferredParameter(object):
             print("The `label` parameter should be a string or None.")
             return False
         return True
+
+class InferredParameterSetIterator(object):
+    '''
+    Iterator class
+    '''
+    def __init__(self, param_set):
+        self._param_set = param_set
+        self._index = 0
+    
+    def __next__(self):
+        '''Returns the next value from team object's lists'''
+        if (self._index < len(self._param_set)):
+            old_index = self._index
+            self._index += 1
+            return self._param_set[old_index]
+        raise StopIteration
+
+class InferredParameterSet(object):
+    """
+    """
+    def __init__(self):
+        self.parameters = []
+    
+    def __repr__(self):
+        return "InferredParameterSet()"
+    
+    def __str__(self):
+        l = ["""
+        {label} parameter
+        
+        Estimate: {estimate}
+        Bounds  : {lbr}{lb}, {ub}{ubr}
+        """.format(
+            label = "Unnamed" if param.label is None else param.label, 
+            estimate = "?" if param.estimate is None else param.estimate, 
+            lbr = "[" if param.inclusive[0] else "(", 
+            lb = "?" if param.bounds[0] is None else param.bounds[0], 
+            ub = "?" if param.bounds[1] is None else param.bounds[1], 
+            ubr = "]" if param.inclusive[1] else ")"
+        ) for param in self.parameters]
+        return "\n\n".join(l)
+    
+    def __len__(self):
+        return len(self.parameters)
+    
+    def __getitem__(self, item):
+        return self.parameters[item]
+    
+    def __iter__(self):
+        ''' Returns the Iterator object '''
+        return InferredParameterSetIterator(self)
+    
+    def add_parameter(self, param):
+        if not isinstance(param, InferredParameter):
+            print("The object to be added is not an InferredParameter().")
+            return
+        self.parameters += [param]
+    
+    def create_grid(self, n = 21):
+        if n % 2 == 0:
+            n += 1
+        half_n = int((n - 1) / 2)
+        grids = [
+            list(np.linspace(param.bounds[0], param.estimate, half_n + 1))[:-1] + \
+            [param.estimate] + \
+            list(np.linspace(param.estimate, param.bounds[1], half_n + 1))[1:] \
+            for param in self.parameters
+        ]
+        M = np.array(np.meshgrid(*grids)).reshape(len(grids), n**len(grids)).T
+        return pd.DataFrame(M, columns = [param.label for param in self.parameters])

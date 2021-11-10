@@ -9,6 +9,7 @@ output: html_document
 library(reticulate)
 conda_create("r-reticulate", python_version = "3.9")
 conda_install("scipy", envname = "r-reticulate")
+conda_install("pandas", envname = "r-reticulate")
 conda_install("numba", envname = "r-reticulate")
 conda_install("triarray", envname = "r-reticulate", pip = TRUE)
 conda_install("../", envname = "r-reticulate", pip = TRUE)
@@ -292,6 +293,24 @@ pf = flippy.PlausibilityFunction(
 )
 pf.get_value([0])
 [print(param) for param in pf.parameters]
+pf.point_estimate
+```
+
+```{python}
+s = flippy.InferredParameterSet()
+p1 = flippy.InferredParameter()
+p1.set_label("mean")
+p1.set_estimate(0)
+p1.set_bounds([-1, 1])
+p2 = flippy.InferredParameter()
+p2.set_label("variance")
+p2.set_estimate(4)
+p2.set_bounds([2, 7])
+s.add_parameter(p1)
+s.add_parameter(p2)
+print(s)
+print([param.estimate for param in s])
+s.create_grid(n = 5)
 ```
 
 ```{r clean}

@@ -1,4 +1,4 @@
-from .new_inferred_param import InferredParameter
+from .new_inferred_param import InferredParameter, InferredParameterSet
 from .two_sample_test import two_sample_test
 from .utils import convert_to_list
 
@@ -54,9 +54,11 @@ class PlausibilityFunction(object):
   
         self.set_data(*args)
         
-        self.parameters = [InferredParameter() for _ in range(self.nparams)]
-        for param, name in zip(self.parameters, self.stat_assignments.keys()):
+        self.parameters = InferredParameterSet()
+        for name in self.stat_assignments.keys():
+            param = InferredParameter()
             param.set_label(name)
+            self.parameters.add_parameter(param)
         self.point_estimate = [param.estimate for param in self.parameters]
   
         if seed is None:
